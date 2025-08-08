@@ -1,0 +1,39 @@
+---
+// src/pages/login.astro
+import { supabase } from '../lib/supabaseClient'
+import { redirect } from 'astro/runtime/server'
+
+let error = ''
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData()
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+
+  const { data, error: loginError } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  })
+
+  if (loginError) {
+    error = loginError.message
+  } else {
+    // Redirect to dashboard
+    return redirect('/dashboard')
+  }
+}
+---
+
+<html lang="en">
+  <head>
+    <title>Login</title>
+  </head>
+  <body>
+    <h1>Login</h1>
+    <form method="POST">
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="password" name="password" placeholder="Password" required />
+      <button type="submit">Log In</button>
+    </form>
+    {error && <p style="color:red">{error}</p>}
+  </body>
+</html>
