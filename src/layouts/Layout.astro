@@ -1,6 +1,7 @@
 ---
 // src/layouts/Layout.astro
 import "../styles/global.css";
+const { pageTitle } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -8,10 +9,18 @@ import "../styles/global.css";
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My App</title>
+    <title>{pageTitle}</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+    <!-- Roboto Web Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+
   </head>
-  <body class="min-h-screen bg-white text-black">
-    <main class="p-4">
+  <body class="min-h-screen text-black">
+    <div class="ribbons"></div>
+    <main class="p-4" role="landmark">
       <slot />
     </main>
   </body>

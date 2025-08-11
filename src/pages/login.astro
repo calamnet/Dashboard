@@ -1,39 +1,18 @@
 ---
-// src/pages/login.astro
-import { supabase } from '../lib/supabaseClient'
-import { redirect } from 'astro/runtime/server'
-
-let error = ''
-if (Astro.request.method === 'POST') {
-  const formData = await Astro.request.formData()
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
-
-  const { data, error: loginError } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  })
-
-  if (loginError) {
-    error = loginError.message
-  } else {
-    // Redirect to dashboard
-    return redirect('/dashboard')
-  }
-}
+import Layout from '../layouts/Layout.astro';
+const pageTitle = "Login";
 ---
 
-<html lang="en">
-  <head>
-    <title>Login</title>
-  </head>
-  <body>
-    <h1>Login</h1>
-    <form method="POST">
-      <input type="email" name="email" placeholder="Email" required />
-      <input type="password" name="password" placeholder="Password" required />
-      <button type="submit">Log In</button>
+<Layout>
+  <div class="max-w-md mx-auto bg-gray-900 text-white p-6 rounded-lg shadow-lg">
+    <h1 class="text-2xl font-bold mb-4">Login</h1>
+    <form method="POST" action="/api/login" class="flex flex-col gap-4">
+      <input type="email" name="email" placeholder="Email" required class="p-2 rounded bg-gray-800 border border-gray-700" />
+      <input type="password" name="password" placeholder="Password" required class="p-2 rounded bg-gray-800 border border-gray-700" />
+      <button type="submit" class="bg-blue-600 py-2 rounded hover:bg-blue-700">Log In</button>
     </form>
-    {error && <p style="color:red">{error}</p>}
-  </body>
-</html>
+    <p class="mt-4 text-sm">
+      Don’t have an account? <a href="/register" class="text-blue-400 hover:underline">Register</a>
+    </p>
+  </div>
+</Layout>

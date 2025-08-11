@@ -1,16 +1,26 @@
 ---
-// src/pages/dashboard.astro
 import Layout from '../layouts/Layout.astro';
+import { supabase } from '../lib/supabaseClient';
+
+const pageTitle = "Dashboard";
+
+
+const accessToken = Astro.cookies.get('sb-access-token')?.value;
+
+let user = null;
+if (accessToken) {
+  const { data } = await supabase.auth.getUser(accessToken);
+  user = data.user;
+}
+
+if (!user) {
+  throw Astro.redirect('/login');
+}
 ---
 
-<html lang="en">
-  <head>
-    <title>Dashboard</title>
-  </head>
-  <body>
-    <h1>Welcome to your dashboard</h1>
-    <form method="POST" action="/logout">
-      <button type="submit">Logout</button>
-    </form>
-  </body>
-</html>
+<Layout>
+  <div class="max-w-lg mx-auto bg-gray-900 text-white p-6 rounded-lg shadow-lg">
+    <h1 class="text-2xl font-bold mb-4">Welcome, {user.email}</h1>
+    <a href="/api/logout" class="text-blue-400 hover:underline">Log Out</a>
+  </div>
+</Layout>
