@@ -1,0 +1,24 @@
+footer {
+	background-color: $acorn-brown;
+	color: $white;
+	font-size: 14px;
+
+    h2 {
+        color: $white;
+    }
+
+    ul {
+        display: block;
+        list-style:none;
+
+        li {
+            display: block;
+            list-style:none;
+            margin-left:0;
+
+            a {
+                color: $white;
+            }
+        }
+    }
+}

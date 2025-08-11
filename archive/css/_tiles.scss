@@ -1,0 +1,24 @@
+.tile {
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: top right;
+	border-radius:16px;
+	column-gap:1rem;
+	gap: 1rem;
+	height: 100%;
+}
+.tile.pink {
+	background-image: url(../images/home/ecommerce.png);
+}
+.tile.blue {
+	background-image: url(../images/home/website-development.png);
+}
+.tile.yellow {
+	background-image: url(../images/home/email.png);
+}
+.tile.green {
+	background-image: url(../images/home/logo.png);
+}
+.tile.green2 {
+	background-image: url(../images/home/helpdesk.png);
+}

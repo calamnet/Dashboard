@@ -1,0 +1,15 @@
+.btn {
+	padding: 10px 20px;
+	border-radius:24px;
+	font-weight: bold;
+}
+
+.btn-theme-primary {
+	background-color: $acorn-ltblue;
+	color:$white;
+
+    &:focus, &:hover {
+        background-color: $acorn-orange;
+        color: $black;
+    }
+}

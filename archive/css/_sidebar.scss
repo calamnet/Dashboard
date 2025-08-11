@@ -1,0 +1,13 @@
+.sidebar {
+	background-color: $acorn-yellow;
+
+    ul {
+        li {
+            a {
+                &:focus, &:hover {
+                    color: $black;
+                }
+            }
+        }
+    }
+}

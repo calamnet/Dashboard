@@ -1,0 +1,27 @@
+body.ContentPage {
+
+    #AcornCarousel {
+        display: none;
+    }
+
+    h1.page-header {
+        border-bottom: 1px solid $gray-300;
+    }
+}
+
+#standout {
+    // Placeholder
+}
+
+.zendesk-video {
+    width: auto;
+
+    @media (min-width:992px) {
+        width: 400px;
+    }
+}
+
+// Background Colors that are used randomly
+.lt-blue {
+    background-color: $acorn-ltblue-pale;
+}

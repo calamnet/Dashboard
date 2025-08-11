@@ -1,0 +1,31 @@
+.carousel-caption {
+	bottom: -15px;
+	text-align:left;
+	@media (min-width:768px) {
+		bottom: 1.25rem;
+	}
+	@media (min-width:992px) {}
+	@media (min-width:1200px) {}
+}
+
+.carousel-caption h5 {
+	text-shadow: 1px 1px 1px $black;
+	font-weight: bold;
+	font-size: 1.2rem;
+	text-transform: uppercase;
+	
+	@media (min-width:768px) {
+		font-size: 1.75rem;
+	}
+	@media (min-width:992px) {}
+	@media (min-width:1200px) {}
+}
+
+.carousel-caption p {
+	max-width:300px;
+	text-shadow: 1px 1px 1px $black;
+	
+	@media (min-width:768px) {}
+	@media (min-width:992px) {}
+	@media (min-width:1200px) {}
+}
