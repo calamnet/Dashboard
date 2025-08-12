@@ -1,14 +1,26 @@
 ---
 // src/layouts/Layout.astro
 import "../styles/global.css";
+
+interface Props {
+  pageTitle: string;
+}
+
 const { pageTitle } = Astro.props;
 ---
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- this MUST be the FIRST tag under head or it will not work -->
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    <meta name="keywords" content="atomic acorn domains seo ssl templating marketing email ai tools project manager" />
+    <meta name="author" content="Atomic Acorn" />
+    <meta name="description" content="Atomic Acorn is" />
+    <meta name="referrer" content="unsafe-url" />
+
     <title>{pageTitle}</title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
@@ -17,10 +29,19 @@ const { pageTitle } = Astro.props;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
 
+    <meta property="og:description" content="" />
+    <meta property="og:url" content="https://atomicacorn.com/" />
+    <meta property="og:title" content="Home" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Home" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@TWITTERHANDLE" />
+    <meta name="twitter:description" content="" />
+    <meta name="twitter:creator" content="@TWITTERHANDLE" />
   </head>
   <body class="min-h-screen text-black">
     <div class="ribbons"></div>
-    <main class="p-4" role="landmark">
+    <main class="p-4" role="main">
       <slot />
     </main>
   </body>

@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 const pageTitle = "Register";
 ---
 
-<Layout>
+<Layout pageTitle={pageTitle}>
   <h1>Create a Test Account</h1>
   <form method="Post" action="/api/register" class="space-y-4">
     <input type="email" name="email" placeholder="Email" required />

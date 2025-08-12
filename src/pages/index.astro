@@ -3,9 +3,11 @@ import Layout from '../layouts/Layout.astro';
 const pageTitle = "Home";
 ---
 
-<Layout>
-  <h1 class="text-2xl font-bold mb-4">Welcome</h1>
-  <p class="mb-4">Please log in to access your dashboard.</p>
-  <a href="/login" class="text-blue-600 underline">Login</a>
-  <a href="/register" class="text-blue-600 underline">Register</a>
+<Layout pageTitle={pageTitle}>
+
+  <p><a href="/"><img src="/public/images/aa_logo.png" alt="Atomic Acorn Logo" /></a></p>
+
+  <p><a href="/login" class="text-white-600 underline">Login</a> | <a href="/register" class="text-white-600 underline">Register</a></p>
+
+  <p><a href="/about" class="text-white-600 underline">About</a> | <a href="/contact" class="text-white-600 underline">Contact</a></p>
 </Layout>
