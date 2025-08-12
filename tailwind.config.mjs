@@ -4,7 +4,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Roboto', 'sans-serif'], // default sans-serif font
+        sans: ['Merriweather', 'sans-serif'], // default sans-serif font
+        serif: ['Roboto', 'sans-serif'], // default sans-serif font
       }
     },
   },
