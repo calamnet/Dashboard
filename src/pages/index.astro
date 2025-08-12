@@ -4,10 +4,22 @@ const pageTitle = "Home";
 ---
 
 <Layout pageTitle={pageTitle}>
+  <div class="h-screen flex justify-center items-center">
+    <div class="w-100 mx-auto p-4">
+      <p><a href="/"><img src="images/aa_logo_no_header.png" alt="Atomic Acorn Logo" class="mx-auto" /></a></p>
 
-  <p><a href="/"><img src="/public/images/aa_logo.png" alt="Atomic Acorn Logo" /></a></p>
+      <h1 class="mt-5 text-center text-white text-8xl font-bold">Atomic Acorn</h1>
+      <p class="mt-5 text-center tagline text-4xl"><em>Power to grow your ideas</em></p>
 
-  <p><a href="/login" class="text-white-600 underline">Login</a> | <a href="/register" class="text-white-600 underline">Register</a></p>
+      <nav id="PrimaryNav" role="navigation">
+        <ul class="mt-5 text-center">
+          <li class="text-white inline-block"><a href="/login" class="text-white underline">Login</a></li>
+          <li class="text-white inline-block"><a href="/register" class="text-white underline">Register</a></li>
+          <li class="text-white inline-block"><a href="/about" class="text-white underline">About</a></li>
+          <li class="text-white inline-block"><a href="/contact" class="text-white underline">Contact</a></li>
+        </ul>
+      </nav>
 
-  <p><a href="/about" class="text-white-600 underline">About</a> | <a href="/contact" class="text-white-600 underline">Contact</a></p>
+    </div>
+  </div>
 </Layout>
