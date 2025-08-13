@@ -1,26 +1,40 @@
 ---
+export const prerender = false;
+
 import Layout from '../layouts/Layout.astro';
 import { supabase } from '../lib/supabaseClient';
 
 const pageTitle = "Dashboard";
 
-
+// Get the access token from cookies
 const accessToken = Astro.cookies.get('sb-access-token')?.value;
 
 let user = null;
 if (accessToken) {
-  const { data } = await supabase.auth.getUser(accessToken);
+  const { data, error } = await supabase.auth.getUser(accessToken);
+  if (error) console.error('Supabase getUser error:', error.message);
   user = data.user;
 }
 
 if (!user) {
   throw Astro.redirect('/login');
 }
+
+// Extract roles from user_metadata
+const roles = user?.user_metadata?.roles || [];
+const primaryRole = roles[0] || 'basic';
 ---
 
 <Layout pageTitle={pageTitle}>
   <div class="max-w-lg mx-auto bg-gray-900 text-white p-6 rounded-lg shadow-lg">
     <h1 class="text-2xl font-bold mb-4">Welcome, {user.email}</h1>
+    <h2 class="mb-2">Primary Role: {primaryRole}</h2>
+    <h3 class="mb-4">All Roles: {JSON.stringify(roles)}</h3>
+
+    {roles.includes('administrator') && (
+      <a href="/admin-dashboard" class="text-green-400 hover:underline mb-2 block">Admin Dashboard</a>
+    )}
+
     <a href="/api/logout" class="text-blue-400 hover:underline">Log Out</a>
   </div>
 </Layout>

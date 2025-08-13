@@ -1,0 +1,62 @@
+---
+const { users } = Astro.props;
+---
+
+<table class="w-full text-left border-collapse mb-4">
+  <thead>
+    <tr>
+      <th class="border-b border-gray-600 p-2">Email</th>
+      <th class="border-b border-gray-600 p-2">Roles</th>
+      <th class="border-b border-gray-600 p-2">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {users.map(u => {
+      const roles = u.user_metadata?.roles || [];
+      return (
+        <tr>
+          <td class="border-b border-gray-600 p-2">{u.email}</td>
+          <td class="border-b border-gray-600 p-2">
+            <input 
+              type="text" 
+              class="text-black p-1 rounded" 
+              value={roles.join(', ')} 
+              id={`roles-${u.id}`} 
+            />
+          </td>
+          <td class="border-b border-gray-600 p-2">
+            <button 
+              type="button" 
+              class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+              onclick={`updateRole("${u.id}")`}
+            >
+              Update
+            </button>
+          </td>
+        </tr>
+      )
+    })}
+  </tbody>
+</table>
+
+<script>
+  async function updateRole(userId) {
+    const input = document.getElementById(`roles-${userId}`);
+    const roles = input.value.split(',').map(r => r.trim()).filter(Boolean);
+
+    try {
+      const res = await fetch('/api/update-role', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, roles })
+      });
+
+      if (!res.ok) throw new Error('Failed to update roles');
+
+      // Refresh the page after success
+      location.reload();
+    } catch (err) {
+      alert('Error updating roles: ' + err.message);
+    }
+  }
+</script>

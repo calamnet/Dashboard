@@ -1,0 +1,41 @@
+---
+const pageTitle = "Email Verification Debug";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{pageTitle}</title>
+  </head>
+  <body class="bg-gray-900 text-white flex items-center justify-center h-screen">
+    <div class="text-center max-w-md p-6 bg-gray-800 rounded shadow">
+      <h1 class="text-2xl font-bold mb-4">Email Verification Debug</h1>
+      <p id="message">Checking link...</p>
+      <pre id="hashOutput" class="mt-4 text-left bg-gray-700 p-2 rounded overflow-x-auto"></pre>
+    </div>
+
+    <script type="module">
+      const hash = window.location.hash.substring(1); // remove '#'
+      const params = new URLSearchParams(hash);
+
+      // Display the full hash
+      document.getElementById('hashOutput').innerText = hash;
+
+      // Check for errors from Supabase
+      const error = params.get('error');
+      if (error) {
+        const description = params.get('error_description');
+        document.getElementById('message').innerText = `Error: ${error}\n${description || ''}`;
+        console.warn("Supabase error in verification link:", error, description);
+      } else {
+        document.getElementById('message').innerText = "No errors detected. Access token found?";
+        const access_token = params.get('access_token');
+        if (access_token) {
+          console.log("Access token:", access_token);
+        } else {
+          console.warn("No access_token found in link");
+        }
+      }
+    </script>
+  </body>
+</html>

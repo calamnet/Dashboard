@@ -1,28 +1,35 @@
+// src/pages/api/logout.ts
+export const prerender = false;
+
 import type { APIRoute } from 'astro';
 import { supabase } from '../../lib/supabaseClient';
 
-export const POST: APIRoute = async ({ request, redirect }) => {
-  const contentType = request.headers.get('content-type') || '';
-
+export const GET: APIRoute = async ({ cookies }) => {
   try {
-    // If this ever needs extra fields in the body, we can parse like register.ts
-    // but for now logout doesn't require any data.
-    if (
-      !contentType.includes('application/json') &&
-      !contentType.includes('application/x-www-form-urlencoded') &&
-      !contentType.includes('multipart/form-data')
-    ) {
-      return new Response('Unsupported content type', { status: 400 });
+    const accessToken = cookies.get('sb-access-token')?.value;
+
+    // Revoke Supabase session if token exists
+    if (accessToken) {
+      const { error } = await supabase.auth.signOut();
+      if (error) console.error('Supabase logout error:', error.message);
     }
-  } catch (err) {
-    return new Response('Invalid request body', { status: 400 });
+
+    // Clear the cookie
+    cookies.set('sb-access-token', '', {
+      path: '/',
+      httpOnly: true,
+      secure: import.meta.env.PROD,
+      sameSite: 'strict',
+      expires: new Date(0), // expire immediately
+    });
+
+    // Redirect to home page
+    return new Response(null, {
+      status: 303,
+      headers: { Location: '/' },
+    });
+  } catch (err: any) {
+    console.error('Logout error:', err);
+    return new Response(err.message || 'Unknown error', { status: 500 });
   }
-
-  const { error } = await supabase.auth.signOut();
-
-  if (error) {
-    return new Response(error.message, { status: 400 });
-  }
-
-  return redirect('/');
 };
