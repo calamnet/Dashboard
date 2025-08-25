@@ -6,7 +6,7 @@ interface Props {
   pageTitle: string;
 }
 
-const { pageTitle } = Astro.props;
+const { pageTitle } = Astro.props as Props;
 ---
 
 <!DOCTYPE html>

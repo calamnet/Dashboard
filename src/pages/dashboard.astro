@@ -2,7 +2,7 @@
 export const prerender = false;
 
 import Layout from '../layouts/Layout.astro';
-import { supabase } from '../lib/supabaseClient';
+import { supabaseAdmin } from '../lib/supabaseAdmin';
 
 const pageTitle = "Dashboard";
 
@@ -11,7 +11,7 @@ const accessToken = Astro.cookies.get('sb-access-token')?.value;
 
 let user = null;
 if (accessToken) {
-  const { data, error } = await supabase.auth.getUser(accessToken);
+  const { data, error } = await supabaseAdmin.auth.getUser(accessToken);
   if (error) console.error('Supabase getUser error:', error.message);
   user = data.user;
 }
@@ -20,19 +20,57 @@ if (!user) {
   throw Astro.redirect('/login');
 }
 
-// Extract roles from user_metadata
-const roles = user?.user_metadata?.roles || [];
-const primaryRole = roles[0] || 'basic';
+// Fetch roles from DB (user_roles → roles(name))
+type RoleNameObj = { name: string };
+type AdminRow = { roles: RoleNameObj[] | RoleNameObj | null };
+
+const { data: myRoleRows, error: myRoleErr } = await supabaseAdmin
+  .from('user_roles')
+  .select('roles(name)')
+  .eq('user_id', user.id);
+
+if (myRoleErr) {
+  console.error('load my roles error:', myRoleErr.message);
+}
+
+// Normalize into a simple string[]
+const roleNames: string[] = (myRoleRows ?? []).flatMap((r: AdminRow) => {
+  const rs = r.roles;
+  if (Array.isArray(rs)) return rs.map(x => x?.name).filter(Boolean) as string[];
+  if (rs && typeof rs === 'object' && 'name' in rs && rs.name) return [String(rs.name)];
+  return [];
+});
+
+const primaryRole = roleNames[0] || 'basic';
+const isAdmin = roleNames.includes('administrator');
 ---
 
 <Layout pageTitle={pageTitle}>
   <div class="max-w-lg mx-auto bg-gray-900 text-white p-6 rounded-lg shadow-lg">
     <h1 class="text-2xl font-bold mb-4">Welcome, {user.email}</h1>
-    <h2 class="mb-2">Primary Role: {primaryRole}</h2>
-    <h3 class="mb-4">All Roles: {JSON.stringify(roles)}</h3>
 
-    {roles.includes('administrator') && (
-      <a href="/admin-dashboard" class="text-green-400 hover:underline mb-2 block">Admin Dashboard</a>
+    <div class="mb-4">
+      <div class="text-sm opacity-80">Primary Role</div>
+      <div class="text-lg">{primaryRole}</div>
+    </div>
+
+    <div class="mb-6">
+      <div class="text-sm opacity-80 mb-1">All Roles</div>
+      {roleNames.length > 0 ? (
+        <div class="flex flex-wrap gap-2">
+          {roleNames.map((r) => (
+            <span class="px-2 py-1 rounded bg-gray-800 border border-gray-700 text-sm">{r}</span>
+          ))}
+        </div>
+      ) : (
+        <div class="text-gray-400">none</div>
+      )}
+    </div>
+
+    {isAdmin && (
+      <a href="/admin-dashboard" class="text-green-400 hover:underline mb-2 block">
+        Admin Dashboard
+      </a>
     )}
 
     <a href="/api/logout" class="text-blue-400 hover:underline">Log Out</a>

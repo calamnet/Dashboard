@@ -1,0 +1,25 @@
+UPDATE auth.users
+SET raw_user_meta_data = jsonb_set(
+    coalesce(raw_user_meta_data, '{}'::jsonb),
+    '{roles}',
+    '["administrator"]',
+    true
+)
+WHERE email = 'bradsmith78@gmail.com';
+
+-- Create roles table
+create table if not exists roles (
+  id uuid primary key default uuid_generate_v4(),
+  name text unique not null,
+  created_at timestamp with time zone default now()
+);
+
+-- Create user_roles join table
+create table if not exists user_roles (
+  user_id uuid references auth.users(id) on delete cascade,
+  role_id uuid references roles(id) on delete cascade,
+  primary key (user_id, role_id)
+);
+
+
+insert into roles (name) values ('administrator'), ('editor'), ('moderator');
