@@ -6,7 +6,7 @@ import { supabaseAdmin } from '../lib/supabaseAdmin';
 
 const pageTitle = "Admin Dashboard";
 
-// --- Auth: get current user from sb-access-token cookie ---
+// Auth
 const accessToken = Astro.cookies.get('sb-access-token')?.value;
 let user = null;
 if (accessToken) {
@@ -16,222 +16,42 @@ if (accessToken) {
 }
 if (!user) throw Astro.redirect('/login');
 
-// --- DB-based admin check (no metadata trust) ---
+// DB-based admin gate
+type RoleNameObj = { name: string };
+type AdminRow = { roles: RoleNameObj[] | RoleNameObj | null };
 const { data: myRoleRows, error: myRoleErr } = await supabaseAdmin
   .from('user_roles')
   .select('roles(name)')
   .eq('user_id', user.id);
+if (myRoleErr) console.error('admin gate roles error:', myRoleErr.message);
+const isAdmin = (myRoleRows ?? []).flatMap((r: AdminRow) => {
+  const rs = r.roles;
+  if (Array.isArray(rs)) return rs.map(x => x?.name).filter(Boolean) as string[];
+  if (rs && typeof rs === 'object' && 'name' in rs && rs.name) return [String(rs.name)];
+  return [];
+}).includes('administrator');
 
-if (myRoleErr) {
-  console.error('admin check error:', myRoleErr.message);
-  throw Astro.redirect('/dashboard');
-}
-const isAdmin = (myRoleRows || []).some(r =>
-  Array.isArray(r.roles) ? r.roles.some(x => x.name === 'administrator') : r.roles?.name === 'administrator'
-);
 if (!isAdmin) throw Astro.redirect('/dashboard');
-
-// --- Load users, roles, and user_roles ---
-const { data: usersData, error: usersError } = await supabaseAdmin.auth.admin.listUsers();
-const users = usersData?.users || [];
-
-const { data: rolesData, error: rolesError } = await supabaseAdmin
-  .from('roles')
-  .select('id, name')
-  .order('name', { ascending: true });
-if (rolesError) console.error(rolesError);
-
-const { data: userRolesData, error: userRolesError } = await supabaseAdmin
-  .from('user_roles')
-  .select('user_id, role_id');
-if (userRolesError) console.error(userRolesError);
-
-// Map user_id -> [role_id]
-const userRolesMap: Record<string, string[]> = {};
-(userRolesData || []).forEach(ur => {
-  if (!userRolesMap[ur.user_id]) userRolesMap[ur.user_id] = [];
-  userRolesMap[ur.user_id].push(ur.role_id);
-});
-
-// Success banner via ?success=1
-const showSuccess = new URL(Astro.request.url).searchParams.get('success') === '1';
 ---
 
 <Layout pageTitle={pageTitle}>
-  <div class="max-w-6xl mx-auto bg-gray-900 text-white p-6 rounded-lg shadow-lg space-y-8">
-    <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold">Admin Dashboard</h1>
-      <span class="text-sm opacity-80">Signed in as <strong>{user.email}</strong></span>
+  <div class="max-w-3xl mx-auto bg-gray-900 text-white p-6 rounded-lg shadow-lg space-y-6">
+    <h1 class="text-2xl font-bold">Admin Dashboard</h1>
+    <p class="opacity-80">Signed in as <strong>{user.email}</strong></p>
+
+    <div class="grid gap-4 md:grid-cols-2">
+      <a href="/admin/roles" class="block bg-gray-800 hover:bg-gray-700 rounded p-4">
+        <h2 class="text-lg font-semibold">Manage Roles</h2>
+        <p class="opacity-80 text-sm">Add, delete, and assign roles to users.</p>
+      </a>
+
+      <!-- Future admin tools go here as clean tiles -->
+      <div class="block bg-gray-800 rounded p-4 opacity-60">
+        <h2 class="text-lg font-semibold">Coming Soon</h2>
+        <p class="opacity-80 text-sm">More admin tools will appear here.</p>
+      </div>
     </div>
 
-    {showSuccess && (
-      <div class="bg-green-600/90 text-white p-2 rounded">Changes saved successfully.</div>
-    )}
-
-    {usersError && <p class="bg-red-700/70 p-2 rounded">Error loading users: {usersError.message}</p>}
-    {rolesError && <p class="bg-red-700/70 p-2 rounded">Error loading roles: {rolesError.message}</p>}
-
-    <!-- Section 1: Manage Roles -->
-    <section class="bg-gray-800 p-4 rounded-lg space-y-3">
-      <h2 class="text-xl font-semibold">Manage Roles</h2>
-
-      <div class="flex gap-2">
-        <input
-          type="text"
-          id="newRoleName"
-          placeholder="New role name (e.g. editor)"
-          class="bg-gray-700 text-white p-2 rounded flex-1"
-        />
-        <button
-          type="button"
-          id="addRoleBtn"
-          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-        >
-          Add Role
-        </button>
-      </div>
-
-      <table class="w-full text-left border-collapse">
-        <thead>
-          <tr class="text-gray-200">
-            <th class="border-b border-gray-700 p-2 w-2/3">Role</th>
-            <th class="border-b border-gray-700 p-2 w-1/3">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rolesData?.map(r => (
-            <tr>
-              <td class="border-b border-gray-700 p-2">{r.name}</td>
-              <td class="border-b border-gray-700 p-2">
-                <button
-                  type="button"
-                  class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded deleteRoleBtn"
-                  data-roleid={r.id}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-          {(!rolesData || rolesData.length === 0) && (
-            <tr><td class="p-3 text-gray-400" colspan="2">No roles yet. Add one above.</td></tr>
-          )}
-        </tbody>
-      </table>
-    </section>
-
-    <!-- Section 2: Assign Roles to Users -->
-    <section class="bg-gray-800 p-4 rounded-lg space-y-3">
-      <h2 class="text-xl font-semibold">Assign Roles to Users</h2>
-
-      <form id="rolesForm">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="text-gray-200">
-                <th class="border-b border-gray-700 p-2 min-w-[240px]">Email</th>
-                {rolesData?.map(r => (
-                  <th class="border-b border-gray-700 p-2 text-center">{r.name}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {users.map(u => {
-                const assigned = userRolesMap[u.id] || [];
-                return (
-                  <tr data-userid={u.id}>
-                    <td class="border-b border-gray-700 p-2">{u.email}</td>
-                    {rolesData?.map(r => (
-                      <td class="border-b border-gray-700 p-2 text-center">
-                        <!-- value = role NAME (API expects names); checked = assigned ID -->
-                        <input type="checkbox" value={r.name} checked={assigned.includes(r.id)} />
-                      </td>
-                    ))}
-                  </tr>
-                );
-              })}
-              {users.length === 0 && (
-                <tr><td class="p-3 text-gray-400" colspan={(rolesData?.length || 0) + 1}>No users.</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div class="pt-3">
-          <button type="button" id="saveRolesBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-            Save All Changes
-          </button>
-        </div>
-      </form>
-    </section>
-
     <a href="/api/logout" class="text-blue-400 hover:underline inline-block">Log Out</a>
-
-    <script is:inline>
-      // --- Add Role ---
-      document.getElementById('addRoleBtn')?.addEventListener('click', async () => {
-        const input = document.getElementById('newRoleName');
-        const roleName = input?.value?.trim();
-        if (!roleName) return alert('Enter a role name');
-
-        try {
-          const res = await fetch('/api/roles', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: roleName })
-          });
-          const text = await res.text();
-          if (res.ok) window.location.href = '/admin-dashboard?success=1';
-          else alert(text || 'Failed to add role.');
-        } catch (err) {
-          alert('Unexpected error: ' + err);
-        }
-      });
-
-      // --- Delete Role ---
-      document.querySelectorAll('.deleteRoleBtn')?.forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const roleId = btn.getAttribute('data-roleid');
-          if (!roleId) return;
-          if (!confirm('Delete this role? This will unassign it from all users.')) return;
-
-          try {
-            const res = await fetch(`/api/roles/${roleId}`, { method: 'DELETE' });
-            const text = await res.text();
-            if (res.ok) window.location.href = '/admin-dashboard?success=1';
-            else alert(text || 'Failed to delete role.');
-          } catch (err) {
-            alert('Unexpected error: ' + err);
-          }
-        });
-      });
-
-      // --- Save All Changes ---
-      document.getElementById('saveRolesBtn')?.addEventListener('click', async () => {
-        const form = document.getElementById('rolesForm');
-        const usersPayload = {};
-        form.querySelectorAll('tbody tr[data-userid]')?.forEach(tr => {
-          const userId = tr.getAttribute('data-userid');
-          const rolesForUser = [];
-          tr.querySelectorAll('input[type="checkbox"]')?.forEach(cb => {
-            if (cb.checked) rolesForUser.push(cb.value); // send role NAMES
-          });
-          usersPayload[userId] = rolesForUser;
-        });
-
-        try {
-          const res = await fetch('/api/update-roles', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ users: usersPayload })
-          });
-          const text = await res.text();
-          if (res.ok) window.location.href = '/admin-dashboard?success=1';
-          else alert(text || 'Failed to update roles.');
-        } catch (err) {
-          alert('Unexpected error: ' + err);
-        }
-      });
-    </script>
   </div>
 </Layout>

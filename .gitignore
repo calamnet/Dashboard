@@ -22,3 +22,12 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+/.vs/dashboard/FileContentIndex/62c7a065-1ed7-4d7d-a319-d4fcbc43a081.vsidx
+/.vs/dashboard/FileContentIndex/b94843f4-d55f-4213-914e-5ff759cadb73.vsidx
+/.vs/dashboard/FileContentIndex/f5396f68-b564-404b-9a12-c12b1da47607.vsidx
+/.vs/dashboard/FileContentIndex/f7e2560d-72d5-4a93-8349-4cbc1f8b276a.vsidx
+/.vs/dashboard/FileContentIndex/f9e4e7d2-9c8d-42ff-af07-23853730d288.vsidx
+/.vs/dashboard/v17/.wsuo
+/.vs/dashboard/v17/DocumentLayout.json
+/.vs/slnx.sqlite
+/.vs
