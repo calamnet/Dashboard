@@ -1,9 +1,8 @@
 ---
 export const prerender = false;
 
-import Layout from '../../layouts/Layout.astro';
+import Layout from '../../layouts/AdminLayout.astro';
 import { supabaseAdmin } from '../../lib/supabaseAdmin';
-import AdminNav from '../partials/AdminNav.astro';
 
 const pageTitle = "Manage Roles";
 
@@ -60,13 +59,11 @@ const showSuccess = new URL(Astro.request.url).searchParams.get('success') === '
 
 <Layout pageTitle={pageTitle}>
 
-  <div class="max-w-6xl mx-auto bg-gray-900 text-white p-6 rounded-lg shadow-lg space-y-8">
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold">Manage Roles</h1>
       <span class="text-sm opacity-80">Signed in as <strong>{user.email}</strong></span>
     </div>
 
-    <AdminNav title="Admin Navigation" />
 
     {showSuccess && (
       <div class="bg-green-600/90 text-white p-2 rounded">Changes saved successfully.</div>
@@ -237,5 +234,4 @@ const showSuccess = new URL(Astro.request.url).searchParams.get('success') === '
         }
       });
     </script>
-  </div>
 </Layout>
