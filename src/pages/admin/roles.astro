@@ -186,7 +186,7 @@ const showSuccess = new URL(Astro.request.url).searchParams.get('success') === '
             body: JSON.stringify({ name: roleName })
           });
           const text = await res.text();
-          if (res.ok) window.location.href = '/admin-dashboard?success=1';
+          if (res.ok) window.location.href = '/admin/roles?success=1';
           else alert(text || 'Failed to add role.');
         } catch (err) {
           alert('Unexpected error: ' + err);
@@ -203,7 +203,7 @@ const showSuccess = new URL(Astro.request.url).searchParams.get('success') === '
           try {
             const res = await fetch(`/api/roles/${roleId}`, { method: 'DELETE' });
             const text = await res.text();
-            if (res.ok) window.location.href = '/admin-dashboard?success=1';
+            if (res.ok) window.location.href = '/admin/roles?success=1';
             else alert(text || 'Failed to delete role.');
           } catch (err) {
             alert('Unexpected error: ' + err);
@@ -231,7 +231,7 @@ const showSuccess = new URL(Astro.request.url).searchParams.get('success') === '
             body: JSON.stringify({ users: usersPayload })
           });
           const text = await res.text();
-          if (res.ok) window.location.href = '/admin-dashboard?success=1';
+          if (res.ok) window.location.href = '/admin/roles?success=1';
           else alert(text || 'Failed to update roles.');
         } catch (err) {
           alert('Unexpected error: ' + err);
