@@ -68,7 +68,6 @@ const showSuccess = new URL(Astro.request.url).searchParams.get('success') === '
 
     <AdminNav title="Admin Navigation" />
 
-
     {showSuccess && (
       <div class="bg-green-600/90 text-white p-2 rounded">Changes saved successfully.</div>
     )}

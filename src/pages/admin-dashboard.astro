@@ -41,13 +41,14 @@ if (!isAdmin) throw Astro.redirect('/dashboard');
 
     <div class="grid gap-4 md:grid-cols-2">
       <a href="/admin/roles" class="block bg-gray-800 hover:bg-gray-700 rounded p-4">
-        <h2 class="text-lg font-semibold">Manage Roles</h2>
+        <h2 class="text-lg font-semibold"><i class="bi bi-person-badge-fill"></i>
+ Manage Roles</h2>
         <p class="opacity-80 text-sm">Add, delete, and assign roles to users.</p>
       </a>
 
       <!-- Future admin tools go here as clean tiles -->
       <div class="block bg-gray-800 rounded p-4 opacity-60">
-        <h2 class="text-lg font-semibold">Coming Soon</h2>
+        <h2 class="text-lg font-semibold"><i class="bi bi-cone-striped"></i> Coming Soon</h2>
         <p class="opacity-80 text-sm">More admin tools will appear here.</p>
       </div>
     </div>
