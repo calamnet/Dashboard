@@ -11,3 +11,21 @@ export default {
   },
   plugins: [],
 }
+
+module.exports = {
+  theme: {
+    extend: {},
+    container: {
+      center: true,
+      padding: '1rem', // ~16px padding like Bootstrap's container
+      screens: {
+        sm: '540px',   // Bootstrap sm
+        md: '720px',   // Bootstrap md
+        lg: '960px',   // Bootstrap lg
+        xl: '1140px',  // Bootstrap xl
+        '2xl': '1320px' // Bootstrap xxl
+      },
+    },
+  },
+  plugins: [],
+}

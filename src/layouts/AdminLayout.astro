@@ -2,12 +2,23 @@
 // src/layouts/Layout.astro
 import "../styles/global.css";
 import AdminNav from '../pages/partials/AdminNav.astro';
+import { supabaseAdmin } from '../lib/supabaseAdmin';
 
 interface Props {
   pageTitle: string;
 }
 
 const { pageTitle } = Astro.props as Props;
+
+// Auth
+const accessToken = Astro.cookies.get('sb-access-token')?.value;
+let user = null;
+if (accessToken) {
+  const { data, error } = await supabaseAdmin.auth.getUser(accessToken);
+  if (error) console.error('Supabase getUser error:', error.message);
+  user = data.user;
+}
+if (!user) throw Astro.redirect('/login');
 ---
 
 <!DOCTYPE html>
@@ -52,15 +63,31 @@ const { pageTitle } = Astro.props as Props;
     </script>
   </head>
   <body class="min-h-screen text-black {pageTitle}">
-    <!--<div class="ribbons"></div>-->
-    <header>
-    
+  <div class="container mx-auto">
+    <div class="ribbons"></div>
+    <header class="grid grid-cols-12 m-5 gap-4" role="banner">
+      <div class="col-span-6">
+        <p>
+          <a href="/">
+            <img src="/images/aa_logo3.png" alt="Atomic Acorn Logo" style="width:60px;display:inline-block;" />
+            <span class="inline-block align-middle text-white"><span class="text-4xl font-bold">Atomic <span class="tagline">Acorn</span></span>
+            <span class="text-1xl"><em>Power to grow your ideas</em></span></span>
+          </a>
+        </p>
+      </div>
+      <div class="col-span-6">
+        <p class="text-right text-white">Signed in as <strong>{user.email}</strong> | <a href="/api/logout" class="text-white hover:underline">Log Out</a></p>
+      </div>
     </header>
-    <main class="max-w-6xl mx-auto bg-gray-900 text-white p-6 rounded-lg shadow-lg space-y-8 p-5" role="main">
-        <aside>
+  
+    <main class="grid grid-cols-12 m-5" role="main">
+        <aside class="col-span-2 bg-gray-300 text-black p-4 rounded-tl rounded-bl">
             <AdminNav title="Admin Navigation" />
         </aside>
-      <slot />
+        <section class="col-span-10 bg-white text-black p-4 rounded-tr rounded-br">
+          <slot />
+        </section>
     </main>
+  </div>
   </body>
 </html>

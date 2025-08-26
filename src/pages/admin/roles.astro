@@ -60,8 +60,7 @@ const showSuccess = new URL(Astro.request.url).searchParams.get('success') === '
 <Layout pageTitle={pageTitle}>
 
     <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold">Manage Roles</h1>
-      <span class="text-sm opacity-80">Signed in as <strong>{user.email}</strong></span>
+      <h1 class="text-2xl font-bold mb-5">Manage Roles</h1>
     </div>
 
 
@@ -73,20 +72,19 @@ const showSuccess = new URL(Astro.request.url).searchParams.get('success') === '
     {rolesError && <p class="bg-red-700/70 p-2 rounded">Error loading roles: {rolesError.message}</p>}
 
     <!-- Section 1: Manage Roles -->
-    <section class="bg-gray-800 p-4 rounded-lg space-y-3">
-      <h2 class="text-xl font-semibold">Manage Roles</h2>
+    <section class="bg-gray-300 p-4 rounded-lg space-y-3 mb-3">
 
       <div class="flex gap-2">
         <input
           type="text"
           id="newRoleName"
           placeholder="New role name (e.g. editor)"
-          class="bg-gray-700 text-white p-2 rounded flex-1"
+          class="bg-white text-black p-2 rounded flex-1"
         />
         <button
           type="button"
           id="addRoleBtn"
-          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+          class="bg-green-600 text-white px-4 py-2 rounded acornblue"
         >
           Add Role
         </button>
@@ -94,7 +92,7 @@ const showSuccess = new URL(Astro.request.url).searchParams.get('success') === '
 
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="text-gray-200">
+          <tr class="text-black">
             <th class="border-b border-gray-700 p-2 w-2/3">Role</th>
             <th class="border-b border-gray-700 p-2 w-1/3">Actions</th>
           </tr>
@@ -122,14 +120,14 @@ const showSuccess = new URL(Astro.request.url).searchParams.get('success') === '
     </section>
 
     <!-- Section 2: Assign Roles to Users -->
-    <section class="bg-gray-800 p-4 rounded-lg space-y-3">
+    <section class="bg-gray-300 p-4 rounded-lg space-y-3">
       <h2 class="text-xl font-semibold">Assign Roles to Users</h2>
 
       <form id="rolesForm">
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="text-gray-200">
+              <tr class="text-black">
                 <th class="border-b border-gray-700 p-2 min-w-[240px]">Email</th>
                 {rolesData?.map(r => (
                   <th class="border-b border-gray-700 p-2 text-center">{r.name}</th>
@@ -159,14 +157,12 @@ const showSuccess = new URL(Astro.request.url).searchParams.get('success') === '
         </div>
 
         <div class="pt-3">
-          <button type="button" id="saveRolesBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+          <button type="button" id="saveRolesBtn" class="bg-blue-600 text-white px-4 py-2 rounded acornblue">
             Save All Changes
           </button>
         </div>
       </form>
     </section>
-
-    <a href="/api/logout" class="text-blue-400 hover:underline inline-block">Log Out</a>
 
     <script is:inline>
       // --- Add Role ---
