@@ -1,7 +1,7 @@
 ---
 export const prerender = false;
 
-import Layout from '../layouts/Layout.astro';
+import Layout from '../layouts/MemberLayout.astro';
 import { supabaseAdmin } from '../lib/supabaseAdmin';
 
 const pageTitle = "Dashboard";
@@ -43,34 +43,44 @@ const roleNames: string[] = (myRoleRows ?? []).flatMap((r: AdminRow) => {
 
 const primaryRole = roleNames[0] || 'basic';
 const isAdmin = roleNames.includes('administrator');
+
+
+// Redirect Administrators to the Admin Dashboard
+// For testing, to see the regular dashboard, you need to login with a basic account
+if (primaryRole == 'administrator') {
+  return Astro.redirect('/admin');
+}
+
 ---
 
 <Layout pageTitle={pageTitle}>
-  <div class="max-w-lg mx-auto bg-gray-900 text-white p-6 rounded-lg shadow-lg">
-    <h1 class="text-2xl font-bold mb-4">Welcome, {user.email}</h1>
+    <h1 class="text-1xl font-bold mb-4">Welcome, {user.email}</h1>
 
-    <div class="mb-4">
-      <div class="text-sm opacity-80">Primary Role</div>
-      <div class="text-lg">{primaryRole}</div>
+    <div class="grid grid-cols-12 my-5" role="main">
+
+    <section class="col-span-9">
+      <h2 class="text-2xl font-bold">Tools</h2>
+      <p>You are currently not subscribed to any tools.</p>
+    </section>
+
+    <aside class="col-span-3 bg-gray-300 text-black p-4 rounded">
+      <div class="mb-4">
+        <div class="text-sm opacity-80">Primary Role</div>
+        <div class="text-lg">{primaryRole}</div>
+      </div>
+
+      <div class="mb-6">
+        <div class="text-sm opacity-80 mb-1">All Roles</div>
+        {roleNames.length > 0 ? (
+          <div class="flex flex-wrap gap-2">
+            {roleNames.map((r) => (
+              <span class="px-2 py-1 rounded border border-gray-700 text-sm acornblue">{r}</span>
+            ))}
+          </div>
+        ) : (
+          <div class="text-gray-400">none</div>
+        )}
+      </div>
+    </aside>
     </div>
-
-    <div class="mb-6">
-      <div class="text-sm opacity-80 mb-1">All Roles</div>
-      {roleNames.length > 0 ? (
-        <div class="flex flex-wrap gap-2">
-          {roleNames.map((r) => (
-            <span class="px-2 py-1 rounded bg-gray-800 border border-gray-700 text-sm">{r}</span>
-          ))}
-        </div>
-      ) : (
-        <div class="text-gray-400">none</div>
-      )}
-    </div>
-
-    {isAdmin && (
-      <a href="/admin-dashboard" class="text-green-400 hover:underline mb-2 block">
-        Admin Dashboard
-      </a>
-    )}
-  </div>
 </Layout>

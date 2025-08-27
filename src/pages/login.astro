@@ -1,44 +1,88 @@
 ---
 import Layout from '../layouts/Layout.astro';
-const pageTitle = "Login";
+const pageTitle = "Welcome to Atomic Acorn";
 ---
 
 <Layout pageTitle={pageTitle}>
-  <div class="max-w-md mx-auto bg-gray-900 text-white p-6 rounded-lg shadow-lg">
-    <h1 class="text-2xl font-bold mb-4">Login</h1>
+  <div class="mt-5 max-w-md mx-auto bg-white text-black p-6 border-2 border-gray-300 rounded">
+    <h1 class="text-2xl font-bold mb-4 text-center">{pageTitle}</h1>
+
+    <p class="text-center text-gray-500 mb-4">Sign in to your account</p>
+
+    <!-- The success banner will be injected client-side if sessionStorage.pw_changed === '1' -->
+
     <form id="loginForm" class="flex flex-col gap-4">
-      <input type="email" name="email" placeholder="Email" required class="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black" />
-      <input type="password" name="password" placeholder="Password" required class="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black" />
-      <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Log In</button>
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        required
+        class="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
+        autocomplete="email"
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required
+        class="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
+        autocomplete="current-password"
+      />
+      <button type="submit" class="text-white py-2 px-4 rounded acornblue">
+        Log In
+      </button>
       <p id="errorMessage" class="text-red-500 text-sm mt-2"></p>
     </form>
+
+    <!--
+    TEMPORARY HIDE - REMOVE EVENTUALLY ONCE SUBSCRIBER BASED REGISTRATION OCCURS
+    LEAVE FOR TESTING
     <p class="mt-4 text-sm">
-      Don’t have an account? <a href="/register" class="text-white underline">Register</a>
+      Don’t have an account? <a href="/register" class="underline">Register</a>
     </p>
+    -->
+    <p class="mt-4 text-sm text-right text-gray-800">
+    <a href="/forgot-password" class="underline">Forgot your password?</a></p>
   </div>
 
   <script type="module">
+    // 1) One-time success banner from sessionStorage (set by /api/change-password)
+    try {
+      if (sessionStorage.getItem('pw_changed') === '1') {
+        const container = document.querySelector('.max-w-md');
+        if (container && !document.getElementById('pwChangedBanner')) {
+          const div = document.createElement('div');
+          div.id = 'pwChangedBanner';
+          div.role = 'status';
+          div.className = 'mb-4 rounded-md border border-green-600 bg-green-900/30 text-green-300 px-3 py-2 text-sm';
+          div.textContent = 'Your password was changed successfully. Please sign in with your new password.';
+          container.insertBefore(div, container.firstChild);
+        }
+        sessionStorage.removeItem('pw_changed');
+      }
+    } catch (e) { /* ignore */ }
+
+    // 2) Existing login flow
     const form = document.getElementById('loginForm');
     const errorMessage = document.getElementById('errorMessage');
 
     form.addEventListener('submit', async (e) => {
-  e.preventDefault();
+      e.preventDefault();
 
-  const formData = new URLSearchParams(new FormData(form)); // <-- change here
+      const formData = new URLSearchParams(new FormData(form));
 
-  const res = await fetch('/api/login', {
-    method: 'POST',
-    body: formData, // now sent as application/x-www-form-urlencoded
-  });
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        body: formData, // application/x-www-form-urlencoded
+      });
 
-  if (!res.ok) {
-    const text = await res.text();
-    errorMessage.textContent = text;
-    return;
-  }
+      if (!res.ok) {
+        const text = await res.text();
+        errorMessage.textContent = text || "Login failed.";
+        return;
+      }
 
-  window.location.href = '/dashboard';
-});
-
+      window.location.href = '/dashboard';
+    });
   </script>
 </Layout>

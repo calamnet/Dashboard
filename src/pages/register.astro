@@ -4,15 +4,15 @@ const pageTitle = "Register";
 ---
 
 <Layout pageTitle={pageTitle}>
-  <div class="max-w-md mx-auto bg-gray-900 text-white p-6 rounded-lg shadow-lg">
-    <h1 class="text-2xl font-bold mb-4">Register for an Account</h1>
+  <div class="mt-5 max-w-md mx-auto bg-white text-black p-6 border-2 border-gray-300 rounded">
+    <h1 class="text-2xl font-bold mb-4 text-center">{pageTitle}</h1>
   <form method="Post" action="/api/register" class="flex flex-col gap-4">
     <input type="email" name="email" class="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black" placeholder="Email" required />
     <input type="password" name="password" class="border border-gray-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black" placeholder="Password" required />
-    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Sign Up</button>
+    <button type="submit" class="text-white py-2 px-4 rounded acornblue">Sign Up</button>
   </form>
   <p class="mt-4 text-sm">
-      Already have an account? <a href="/login" class="text-white underline">Login</a>
+      Already have an account? <a href="/login" class="underline">Login</a>
     </p>
 </div>
 </Layout>

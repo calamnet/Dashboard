@@ -65,8 +65,8 @@ if (!user) throw Astro.redirect('/login');
   <body class="min-h-screen text-black {pageTitle}">
   <div class="container mx-auto">
     <div class="ribbons"></div>
-    <header class="grid grid-cols-12 m-5 gap-4" role="banner">
-      <div class="col-span-6">
+    <header class="grid grid-cols-12 mt-3 mx-5 gap-4" role="banner">
+      <div class="col-span-12">
         <p>
           <a href="/">
             <img src="/images/aa_logo3.png" alt="Atomic Acorn Logo" style="width:60px;display:inline-block;" />
@@ -75,16 +75,20 @@ if (!user) throw Astro.redirect('/login');
           </a>
         </p>
       </div>
-      <div class="col-span-6">
-        <p class="text-right text-white">Signed in as <strong>{user.email}</strong> | <a href="/api/logout" class="text-white hover:underline">Log Out</a></p>
+      <div class="col-span-12 bg-gray-900 pr-3 py-2 rounded-tl rounded-tr">
+        <ul class="text-right text-white">
+          <li class="inline-block mr-3">Signed in as <strong>{user.email}</strong></li>
+          <li class="inline-block mr-3"><a href="/account/change-password" class="text-white hover:underline"><i class="bi bi-person-fill-lock"></i> Change Password</a></li>
+          <li class="inline-block"><a href="/api/logout" class="text-white hover:underline"><i class="bi bi-door-closed-fill"></i> Log Out</a></li>
+        </ul>
       </div>
     </header>
   
-    <main class="grid grid-cols-12 m-5" role="main">
-        <aside class="col-span-2 bg-gray-300 text-black p-4 rounded-tl rounded-bl">
+    <main class="grid grid-cols-12 mb-3 mx-5" role="main">
+        <aside class="col-span-3 bg-gray-300 text-black p-4 rounded-bl">
             <AdminNav title="Admin Navigation" />
         </aside>
-        <section class="col-span-10 bg-white text-black p-4 rounded-tr rounded-br">
+        <section class="col-span-9 bg-white text-black p-4 rounded-br">
           <slot />
         </section>
     </main>
