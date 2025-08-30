@@ -1,0 +1,93 @@
+---
+// src/layouts/Layout.astro
+import "../styles/global.css";
+
+import { supabaseAdmin } from '../lib/supabaseAdmin';
+
+
+interface Props {
+  pageTitle: string;
+}
+
+const { pageTitle } = Astro.props as Props;
+
+// Auth
+const accessToken = Astro.cookies.get('sb-access-token')?.value;
+let user = null;
+if (accessToken) {
+  const { data, error } = await supabaseAdmin.auth.getUser(accessToken);
+  if (error) console.error('Supabase getUser error:', error.message);
+  user = data.user;
+}
+if (!user) throw Astro.redirect('/login');
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- this MUST be the FIRST tag under head or it will not work -->
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    <meta name="keywords" content="atomic acorn domains seo ssl templating marketing email ai tools project manager" />
+    <meta name="author" content="Atomic Acorn" />
+    <meta name="description" content="Atomic Acorn is" />
+    <meta name="referrer" content="unsafe-url" />
+
+    <title>{pageTitle} | Atomic Acorn</title>
+    <link rel="icon" href="/images/aa_acorn.png" type="image/x-icon">
+
+    <!-- Roboto Web Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <meta property="og:description" content="" />
+    <meta property="og:url" content="https://atomicacorn.com/" />
+    <meta property="og:title" content="{pageTitle}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Atomic Acorn" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@TWITTERHANDLE" />
+    <meta name="twitter:description" content="" />
+    <meta name="twitter:creator" content="@TWITTERHANDLE" />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5DTC7BQW3X"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-386454385');
+    </script>
+  </head>
+  <body class="min-h-screen text-black {pageTitle}">
+    <div class="ribbons"></div>
+    <header class="grid grid-cols-12 mt-3 mx-5 gap-4" role="banner">
+      <div class="col-span-12">
+        <p>
+          <a href="/">
+            <img src="/images/aa_logo3.png" alt="Atomic Acorn Logo" style="width:60px;display:inline-block;" />
+            <span class="inline-block align-middle text-white"><span class="text-4xl font-bold">Atomic <span class="tagline">Acorn</span></span>
+            <span class="text-1xl"><em>Power to grow your ideas</em></span></span>
+          </a>
+        </p>
+      </div>
+      <div class="col-span-12 bg-gray-900 pr-3 py-2 rounded-tl rounded-tr">
+        <ul class="text-right text-white">
+          <li class="inline-block mr-3">Signed in as <strong>{user.email}</strong></li>
+          <li class="inline-block mr-3"><a href="/account/change-password" class="text-white hover:underline"><i class="bi bi-person-fill-lock"></i> Change Password</a></li>
+          <li class="inline-block"><a href="/api/logout" class="text-white hover:underline"><i class="bi bi-door-closed-fill"></i> Log Out</a></li>
+        </ul>
+      </div>
+    </header>
+  
+    <main class="grid grid-cols-12 mb-3 mx-5" role="main">
+      <section class="col-span-12 bg-white text-black p-4 rounded-br">
+          <slot />
+        </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+---
+export const prerender = false;
+
+import Layout from '../../layouts/AdminLayout.astro';
+import { supabaseAdmin } from '../../lib/supabaseAdmin';
+
+const pageTitle = "Admin Dashboard";
+
+// Auth
+const accessToken = Astro.cookies.get('sb-access-token')?.value;
+let user = null;
+if (accessToken) {
+  const { data, error } = await supabaseAdmin.auth.getUser(accessToken);
+  if (error) console.error('Supabase getUser error:', error.message);
+  user = data.user;
+}
+if (!user) throw Astro.redirect('/login');
+
+// DB-based admin gate
+type RoleNameObj = { name: string };
+type AdminRow = { roles: RoleNameObj[] | RoleNameObj | null };
+const { data: myRoleRows, error: myRoleErr } = await supabaseAdmin
+  .from('user_roles')
+  .select('roles(name)')
+  .eq('user_id', user.id);
+if (myRoleErr) console.error('admin gate roles error:', myRoleErr.message);
+const isAdmin = (myRoleRows ?? []).flatMap((r: AdminRow) => {
+  const rs = r.roles;
+  if (Array.isArray(rs)) return rs.map(x => x?.name).filter(Boolean) as string[];
+  if (rs && typeof rs === 'object' && 'name' in rs && rs.name) return [String(rs.name)];
+  return [];
+}).includes('administrator');
+
+if (!isAdmin) throw Astro.redirect('/dashboard');
+---
+
+<Layout pageTitle={pageTitle}>
+    <h1 class="text-2xl font-bold mb-5"><i class="bi bi-incognito"></i> Admin Dashboard</h1>
+    <div class="grid gap-4 md:grid-cols-2 mb-5">
+      <a href="/admin/roles" class="block bg-gray-800 hover:bg-gray-700 rounded p-4 text-white">
+        <h2 class="text-lg font-semibold"><i class="bi bi-people-fill"></i> Manage Roles</h2>
+        <p class="opacity-80 text-sm">Add, delete, and assign roles to users.</p>
+      </a>
+
+      <!-- Future admin tools go here as clean tiles -->
+      <div class="block bg-gray-800 rounded p-4 opacity-60 text-white">
+        <h2 class="text-lg font-semibold"><i class="bi bi-cone-striped"></i> Coming Soon</h2>
+        <p class="opacity-80 text-sm">More admin tools will appear here.</p>
+      </div>
+    </div>
+
+    <div class="grid gap-4 md:grid-cols-2 mb-5">
+      <!-- Future admin tools go here as clean tiles -->
+      <div class="block bg-gray-800 rounded p-4 opacity-60 text-white">
+        <h2 class="text-lg font-semibold"><i class="bi bi-cone-striped"></i> Coming Soon</h2>
+        <p class="opacity-80 text-sm">More admin tools will appear here.</p>
+      </div>
+
+      <!-- Future admin tools go here as clean tiles -->
+      <div class="block bg-gray-800 rounded p-4 opacity-60 text-white">
+        <h2 class="text-lg font-semibold"><i class="bi bi-cone-striped"></i> Coming Soon</h2>
+        <p class="opacity-80 text-sm">More admin tools will appear here.</p>
+      </div>
+    </div>
+</Layout>
