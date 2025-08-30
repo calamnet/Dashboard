@@ -1,62 +1,27 @@
 ---
-// src/layouts/Layout.astro
+// src/layouts/HomeLayout.astro
 import "../styles/global.css";
+import HeadSection from '../pages/partials/Head.astro';
+import FooterSection from '../pages/partials/Footer.astro';
 
 interface Props {
   pageTitle: string;
 }
 
 const { pageTitle } = Astro.props as Props;
+// Dynamic CSS Class - Target Individual Pages
+const PageClass = pageTitle;
+const BodyClass = `min-h-screen text-black ${PageClass}`;
 ---
 
 <!DOCTYPE html>
 <html lang="en">
-  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> <!-- this MUST be the FIRST tag under head or it will not work -->
-    <meta charset="UTF-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-    <meta name="keywords" content="atomic acorn domains seo ssl templating marketing email ai tools project manager" />
-    <meta name="author" content="Atomic Acorn" />
-    <meta name="description" content="Atomic Acorn is" />
-    <meta name="referrer" content="unsafe-url" />
-
-    <title>{pageTitle} | Atomic Acorn</title>
-    <link rel="icon" href="/images/aa_acorn.png" type="image/x-icon">
-
-    <!-- Roboto Web Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
-    <meta property="og:description" content="" />
-    <meta property="og:url" content="https://atomicacorn.com/" />
-    <meta property="og:title" content="{pageTitle}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Atomic Acorn" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:site" content="@TWITTERHANDLE" />
-    <meta name="twitter:description" content="" />
-    <meta name="twitter:creator" content="@TWITTERHANDLE" />
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5DTC7BQW3X"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-386454385');
-    </script>
-  </head>
-  <body class="min-h-screen text-black {pageTitle}">
-    <!--<div class="ribbons"></div>-->
-    <header>
-    
-    </header>
+  <HeadSection pageTitle={pageTitle} />
+  <body class={BodyClass}>
+    <header role="banner"></header>
     <main role="main">
       <slot />
     </main>
+    <FooterSection />
   </body>
 </html>
