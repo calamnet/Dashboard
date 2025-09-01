@@ -1,8 +1,6 @@
 ---
 // src/layouts/AdminLayout.astro
-import "../styles/global.css";
-import HeadSection from '../pages/partials/Head.astro';
-import FooterSection from '../pages/partials/Footer.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
 import AdminNav from '../pages/partials/AdminNav.astro';
 import { supabaseAdmin } from '../lib/supabaseAdmin';
 
@@ -11,9 +9,6 @@ interface Props {
 }
 
 const { pageTitle } = Astro.props as Props;
-// Dynamic CSS Class - Target Individual Pages
-const PageClass = pageTitle;
-const BodyClass = `min-h-screen text-black ${PageClass}`;
 
 // Auth
 const accessToken = Astro.cookies.get('sb-access-token')?.value;
@@ -26,13 +21,8 @@ if (accessToken) {
 if (!user) throw Astro.redirect('/login');
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-  <HeadSection pageTitle={pageTitle} />
-  <body class={BodyClass}>
-  <div class="container mx-auto">
-    <div class="ribbons"></div>
-    <header class="grid grid-cols-12 mt-3 mx-5 gap-4" role="banner">
+<BaseLayout pageTitle={pageTitle}>
+    <section slot="header" class="grid grid-cols-12 mt-3 mx-5 gap-4">
       <div class="col-span-12">
         <p>
           <a href="/">
@@ -49,17 +39,19 @@ if (!user) throw Astro.redirect('/login');
           <li class="inline-block"><a href="/api/logout" class="text-white hover:underline"><i class="bi bi-door-closed-fill"></i> Log Out</a></li>
         </ul>
       </div>
-    </header>
+      <slot name="header" />
+    </section>
   
-    <main class="grid grid-cols-12 mb-3 mx-5" role="main">
+    <section class="grid grid-cols-12 mb-3 mx-5">
         <aside class="col-span-3 bg-gray-300 text-black p-4 rounded-bl">
             <AdminNav title="Admin Navigation" />
         </aside>
-        <section class="col-span-9 bg-white text-black p-4 rounded-br">
+        <div class="col-span-9 bg-white text-black p-4 rounded-br">
           <slot />
-        </section>
-    </main>
-  </div>
-  <FooterSection />
-  </body>
-</html>
+        </div>
+    </section>
+
+    <section slot="footer">
+      <slot name="footer" />
+    </section>
+</BaseLayout>

@@ -1,8 +1,23 @@
 ---
-import Layout from '../layouts/HomeLayout.astro';
+import Layout from '../layouts/Layout.astro';
 const pageTitle = "About";
 ---
 
 <Layout pageTitle={pageTitle}>
-  <h1>About</h1>
+  <section class="flex justify-center items-center">
+    <div class="w-100 mx-auto p-4">
+      <h1 class="text-white font-bold">About</h1>
+    </div>
+  </section>
+  <nav id="PrimaryNav" role="navigation">
+          <ul class="mt-5 text-center">
+            <li class="text-white inline-block"><a href="/login" class="text-white underline">Login</a></li>
+            <!--<li class="text-white inline-block"><a href="/register" class="text-white underline">Register</a></li>-->
+            <li class="text-white inline-block"><a href="/about" class="text-white underline">About</a></li>
+            <li class="text-white inline-block"><a href="/contact" class="text-white underline">Contact</a></li>
+          </ul>
+        </nav>
 </Layout>
+
+<fragment slot="header"></fragment>
+<fragment slot="footer"></fragment>

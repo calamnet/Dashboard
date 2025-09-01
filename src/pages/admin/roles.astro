@@ -1,7 +1,7 @@
 ---
 export const prerender = false;
 
-import Layout from '../../layouts/AdminLayout.astro';
+import AdminLayout from '../../layouts/AdminLayout.astro';
 import { supabaseAdmin } from '../../lib/supabaseAdmin';
 
 const pageTitle = "Manage Roles";
@@ -57,7 +57,7 @@ const userRolesMap: Record<string, string[]> = {};
 const showSuccess = new URL(Astro.request.url).searchParams.get('success') === '1';
 ---
 
-<Layout pageTitle={pageTitle}>
+<AdminLayout pageTitle={pageTitle}>
 
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold mb-5"><i class="bi bi-people-fill"></i> Manage Roles</h1>
@@ -230,4 +230,4 @@ const showSuccess = new URL(Astro.request.url).searchParams.get('success') === '
         }
       });
     </script>
-</Layout>
+</AdminLayout>

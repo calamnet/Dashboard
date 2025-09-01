@@ -1,27 +1,32 @@
 ---
 // src/layouts/HomeLayout.astro
-import "../styles/global.css";
-import HeadSection from '../pages/partials/Head.astro';
-import FooterSection from '../pages/partials/Footer.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
 
 interface Props {
   pageTitle: string;
 }
 
 const { pageTitle } = Astro.props as Props;
-// Dynamic CSS Class - Target Individual Pages
-const PageClass = pageTitle;
-const BodyClass = `min-h-screen text-black ${PageClass}`;
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-  <HeadSection pageTitle={pageTitle} />
-  <body class={BodyClass}>
-    <header role="banner"></header>
-    <main role="main">
-      <slot />
-    </main>
-    <FooterSection />
-  </body>
-</html>
+<BaseLayout pageTitle={pageTitle}>
+    <section slot="header">
+      <slot name="header" />
+      <!--<div class="mt-5 max-w-md mx-auto p-2">
+        <p class="text-center">
+          <a href="/">
+            <img src="/images/aa_logo3.png" alt="Atomic Acorn Logo" style="width:60px;display:inline-block;" />
+            <span class="inline-block align-middle text-white"><span class="text-4xl font-bold">Atomic <span class="tagline">Acorn</span></span></span>
+          </a>
+        </p>
+        <p class="text-center"><span class="text-1xl text-white"><em>Power to grow your ideas</em></span></p>
+      </div>-->
+    </section>
+    <section slot="main">
+      <slot name="main" />
+    </section>
+    <section slot="footer">
+      <slot name="footer" />
+      <p>testing</p>
+    </section>
+</BaseLayout>

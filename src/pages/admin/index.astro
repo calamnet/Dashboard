@@ -1,7 +1,7 @@
 ---
 export const prerender = false;
 
-import Layout from '../../layouts/AdminLayout.astro';
+import AdminLayout from '../../layouts/AdminLayout.astro';
 import { supabaseAdmin } from '../../lib/supabaseAdmin';
 
 const pageTitle = "Admin Dashboard";
@@ -34,7 +34,7 @@ const isAdmin = (myRoleRows ?? []).flatMap((r: AdminRow) => {
 if (!isAdmin) throw Astro.redirect('/dashboard');
 ---
 
-<Layout pageTitle={pageTitle}>
+<AdminLayout pageTitle={pageTitle}>
     <h1 class="text-2xl font-bold mb-5"><i class="bi bi-incognito"></i> Admin Dashboard</h1>
     <div class="grid gap-4 md:grid-cols-2 mb-5">
       <a href="/admin/roles" class="block bg-gray-800 hover:bg-gray-700 rounded p-4 text-white">
@@ -62,4 +62,4 @@ if (!isAdmin) throw Astro.redirect('/dashboard');
         <p class="opacity-80 text-sm">More admin tools will appear here.</p>
       </div>
     </div>
-</Layout>
+</AdminLayout>

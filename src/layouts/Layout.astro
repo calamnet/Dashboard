@@ -1,25 +1,16 @@
 ---
 // src/layouts/Layout.astro
-import "../styles/global.css";
-import HeadSection from '../pages/partials/Head.astro';
-import FooterSection from '../pages/partials/Footer.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
 
 interface Props {
   pageTitle: string;
 }
 
 const { pageTitle } = Astro.props as Props;
-// Dynamic CSS Class - Target Individual Pages
-const PageClass = pageTitle;
-const BodyClass = `min-h-screen text-black ${PageClass}`;
 
 ---
-
-<!DOCTYPE html>
-<html lang="en">
-  <HeadSection pageTitle={pageTitle} />
-  <body class={BodyClass}>
-    <header role="banner">
+<BaseLayout pageTitle={pageTitle}>
+    <section slot="header">
       <div class="mt-5 max-w-md mx-auto p-2">
         <p class="text-center">
           <a href="/">
@@ -29,10 +20,12 @@ const BodyClass = `min-h-screen text-black ${PageClass}`;
         </p>
         <p class="text-center"><span class="text-1xl text-white"><em>Power to grow your ideas</em></span></p>
       </div>
-    </header>
-    <main role="main">
-      <slot />
-    </main>
-    <FooterSection />
-  </body>
-</html>
+      <slot name="header" />
+    </section>
+
+    <slot />
+
+    <section slot="footer">
+      <slot name="footer" />
+    </section>
+  </BaseLayout>
